@@ -1,0 +1,14 @@
+/Build/*
+!/Build/Build.sln
+/Library/
+/External/
+/Data/
+/Source/Library/x64/
+/Source/Game/x64/
+
+.vs/
+*.obj
+*.user
+*.suo
+
+!.gitignore
