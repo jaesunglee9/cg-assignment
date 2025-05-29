@@ -54,6 +54,9 @@
     <ClCompile Include="Model\Model.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="Character\Character.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.h">
@@ -102,6 +105,9 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Model\Model.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Character\Character.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

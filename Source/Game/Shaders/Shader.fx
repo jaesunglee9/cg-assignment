@@ -1,4 +1,4 @@
-#define NUM_LIGHTS (3)
+#define NUM_LIGHTS (2)
 
 Texture2D txDiffuse : register(t0);
 Texture2D txSpecular : register(t1);

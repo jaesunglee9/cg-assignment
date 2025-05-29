@@ -198,3 +198,10 @@ void Renderable::Translate(_In_ const XMVECTOR& offset)
 {
 	m_world *= XMMatrixTranslationFromVector(offset);
 }
+
+void Renderable::RotateYInObjectCoordinate(FLOAT angle, const XMVECTOR& offset)
+{
+	m_world *= XMMatrixTranslationFromVector(-offset)
+		* XMMatrixRotationY(angle)
+		* XMMatrixTranslationFromVector(offset);		   
+}

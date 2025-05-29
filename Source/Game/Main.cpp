@@ -4,6 +4,7 @@
 #include "Cube/RotatingCube.h"
 #include "Light/RotatingPointLight.h"
 #include "Model/Model.h"
+#include "Character/Character.h"
 #include "Game/Game.h"
 
 INT WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine, _In_ INT nCmdShow)
@@ -27,9 +28,9 @@ INT WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     // Point Light
     XMFLOAT4 color;
     XMStoreFloat4(&color, Colors::AntiqueWhite);
-    color.x *= 20;
-    color.y *= 20;
-    color.z *= 20;
+    color.x *= 5;
+    color.y *= 5;
+    color.z *= 5;
 
     std::shared_ptr<PointLight> pointLight = std::make_shared<PointLight>(XMFLOAT4(-5.77f, 5.77f, -5.77f, 1.0f), color);
 
@@ -58,7 +59,7 @@ INT WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     // Assuming RotatingPointLight constructor is (centerOffset, color, radius, speed)
     // The centerOffset is where the orbit is centered, e.g., origin or model position.
     std::shared_ptr<RotatingPointLight> rotatingPointLight = std::make_shared<RotatingPointLight>(
-        XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f),   // Center of rotation (e.g., origin)
+        XMFLOAT4(0.0f, 2.0f, 0.0f, 1.0f),   // Center of rotation (e.g., origin)
         rpcolor
     );
 
@@ -75,7 +76,7 @@ INT WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     std::shared_ptr<RotatingCube> rotatingLightCube =
         std::make_shared<RotatingCube>(rpcolor);     // same color as the light
 
-    rotatingLightCube->Translate(XMVectorSet(0.0f, 0.0f, -6.0f, 0.0f));
+    rotatingLightCube->Translate(XMVectorSet(0.0f, 2.0f, 0.0f, 0.0f));
 
     if (FAILED(game->GetRenderer()->AddRenderable(L"RotatingLightCube", rotatingLightCube)))
         return 0;
@@ -86,13 +87,20 @@ INT WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
 
     // Golem
-    std::shared_ptr<Model> golem = std::make_shared<Model>(L"../../Data/Stone/Stone.obj");
-    if (FAILED(game->GetRenderer()->AddRenderable(L"Golem", golem)))
+    std::shared_ptr<Character> golem = std::make_shared<Character>(L"../../Data/Stone/Stone.obj");
+
+    golem->ScaleUniform(0.2f);
+    golem->Translate(XMVectorSet(0.0f, -1.0f, 0.0f, 0.0f));
+    if (FAILED(game->GetRenderer()->AddRenderable(L"golem", golem)))
         return 0;
-    if (FAILED(game->GetRenderer()->SetVertexShaderOfRenderable(L"Golem", L"VS")))
+    if (FAILED(game->GetRenderer()->SetVertexShaderOfRenderable(L"golem", L"VS")))
         return 0;
-    if (FAILED(game->GetRenderer()->SetPixelShaderOfRenderable(L"Golem", L"PS")))
+    if (FAILED(game->GetRenderer()->SetPixelShaderOfRenderable(L"golem", L"PS")))
         return 0;
+
+	game->GetRenderer()->SetCharacter(golem.get());
+
+
 
 
     if (FAILED(game->Initialize(hInstance, nCmdShow)))

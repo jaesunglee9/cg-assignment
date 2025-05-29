@@ -8,6 +8,7 @@
 #include "Shader/VertexShader.h"
 #include "Shader/PixelShader.h"
 #include "Camera/Camera.h"
+#include "Character/Character.h"
 
 class Renderer
 {
@@ -30,6 +31,8 @@ public:
 
 	D3D_DRIVER_TYPE GetDriverType() const;
 
+	void SetCharacter(Character* ch) { m_player = ch; }
+
 private:
 	D3D_DRIVER_TYPE m_driverType;
 	D3D_FEATURE_LEVEL m_featureLevel;
@@ -48,6 +51,8 @@ private:
 
 	Camera m_camera;
 	XMMATRIX m_projection;
+
+	Character* m_player = nullptr;
 
 	std::unordered_map<PCWSTR, std::shared_ptr<Renderable>> m_renderables;
 	std::shared_ptr<PointLight> m_aPointLights[NUM_LIGHTS];

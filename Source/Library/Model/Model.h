@@ -14,7 +14,7 @@ struct aiMaterial;
  *  -----
  *  Loads a file via Assimp, creates GPU buffers, textures and material data.
  */
-class Model final : public Renderable
+class Model : public Renderable
 {
 public:
     explicit Model(const std::filesystem::path& filePath);

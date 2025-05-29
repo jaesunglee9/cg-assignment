@@ -12,7 +12,7 @@ Renderer::Renderer()
     , m_renderTargetView()
     , m_depthStencil()
     , m_depthStencilView()
-    , m_camera(XMVectorSet(0.0f, 3.0f, -6.0f, 0.0f))
+    , m_camera(XMVectorSet(6.0f, 6.0f, -6.0f, 1.0f))
     , m_projection()
     , m_renderables()
     , m_aPointLights()
@@ -299,24 +299,27 @@ HRESULT Renderer::AddPixelShader(_In_ PCWSTR pszPixelShaderName, _In_ const std:
     return S_OK;
 }
 
-void Renderer::HandleInput(_In_ const InputDirections& directions, _In_ const MouseRelativeMovement& mouseRelativeMovement, const BOOL& mouseRightClick, _In_ FLOAT deltaTime)
+void Renderer::HandleInput(
+    _In_ const InputDirections& directions,
+    _In_ const MouseRelativeMovement& mouseRelativeMovement,
+    const BOOL& mouseRightClick,
+    _In_ FLOAT deltaTime)
 {
-    m_camera.HandleInput(directions, mouseRelativeMovement, mouseRightClick, deltaTime);
+	if (m_player)
+	{
+		m_player->HandleInput(directions, deltaTime);
+	}
+
 }
 
-void Renderer::Update(_In_ FLOAT deltaTime)
+void Renderer::Update(_In_ FLOAT dt)
 {
-    for (auto it = m_renderables.begin(); it != m_renderables.end(); ++it)
-    {
-        it->second->Update(deltaTime);
-    }
+    for (auto& kv : m_renderables) kv.second->Update(dt);
+    for (auto& p : m_aPointLights) p->Update(dt);
+    if (m_player) m_player->Update(dt);
 
-    for (UINT i = 0; i < NUM_LIGHTS; ++i)
-    {
-        m_aPointLights[i]->Update(deltaTime);
-    }
-
-    m_camera.Update(deltaTime);
+    // 2. now make the camera follow the updated character
+    if (m_player) m_camera.Follow(*m_player);
 }
 
 void Renderer::Render()

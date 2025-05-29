@@ -2,8 +2,6 @@
 
 Camera::Camera(_In_ const XMVECTOR& position)
 	:m_cbChangeOnCameraMovement()
-    , m_yaw(0.0f)
-    , m_pitch(0.0f)
     , m_moveLeftRight(0.0f)
     , m_moveBackForward(0.0f)
     , m_moveUpDown(0.0f)
@@ -13,9 +11,9 @@ Camera::Camera(_In_ const XMVECTOR& position)
     , m_cameraRight(DEFAULT_RIGHT)
     , m_cameraUp(DEFAULT_UP)
     , m_eye(position)
-    , m_at(position + m_cameraForward)
+    , m_target(DEFAULT_TARGET)
+    , m_at(XMVectorAdd(position, m_target))
     , m_up(m_cameraUp)
-    , m_rotation()
     , m_view(XMMatrixLookAtLH(m_eye, m_at, m_up))
 {
 }
@@ -45,47 +43,6 @@ ComPtr<ID3D11Buffer>& Camera::GetConstantBuffer()
     return m_cbChangeOnCameraMovement;
 }
 
-void Camera::HandleInput(_In_ const InputDirections& directions, _In_ const MouseRelativeMovement& mouseRelativeMovement, const BOOL& mouseRightClick, _In_ FLOAT deltaTime)
-{
-    if (directions.bFront)
-    {
-        m_moveBackForward += m_movementSpeed * deltaTime;
-    }
-
-    if (directions.bLeft)
-    {
-        m_moveLeftRight -= m_movementSpeed * deltaTime;
-    }
-
-    if (directions.bBack)
-    {
-        m_moveBackForward -= m_movementSpeed * deltaTime;
-    }
-
-    if (directions.bRight)
-    {
-        m_moveLeftRight += m_movementSpeed * deltaTime;
-    }
-
-    if (directions.bUp)
-    {
-        m_moveUpDown += m_movementSpeed * deltaTime;
-    }
-
-    if (directions.bDown)
-    {
-        m_moveUpDown -= m_movementSpeed * deltaTime;
-    }
-
-    if (mouseRightClick)
-    {
-        if (mouseRelativeMovement.X != 0 || mouseRelativeMovement.Y != 0)
-        {
-            m_yaw += static_cast<FLOAT>(mouseRelativeMovement.X) * m_rotationSpeed;
-            m_pitch += static_cast<FLOAT>(mouseRelativeMovement.Y) * m_rotationSpeed;
-        }
-    }
-}
 
 HRESULT Camera::Initialize(_In_  ID3D11Device* pDevice, _In_ ID3D11DeviceContext* pImmediateContext)
 {
@@ -105,27 +62,36 @@ HRESULT Camera::Initialize(_In_  ID3D11Device* pDevice, _In_ ID3D11DeviceContext
 
 void Camera::Update(_In_ FLOAT deltaTime)
 {
-    m_rotation = XMMatrixRotationRollPitchYaw(m_pitch, m_yaw, 0.0f);
 
-    m_at = XMVector3TransformCoord(DEFAULT_FORWARD, m_rotation);
-    m_at = XMVector3Normalize(m_at);
+    m_eye = XMVectorAdd(m_eye, XMVectorScale(Camera::DEFAULT_RIGHT, m_moveLeftRight));
+    m_eye = XMVectorAdd(m_eye, XMVectorScale(Camera::DEFAULT_FORWARD, m_moveBackForward));
 
-    XMMATRIX rotateYTempMatrix = XMMatrixRotationY(m_yaw);
-
-    m_cameraRight = XMVector3TransformCoord(DEFAULT_RIGHT, rotateYTempMatrix);
-    m_cameraUp = XMVector3TransformCoord(DEFAULT_UP, rotateYTempMatrix);
-    m_cameraForward = XMVector3TransformCoord(DEFAULT_FORWARD, rotateYTempMatrix);
-
-    m_eye += m_moveLeftRight * m_cameraRight;
-    m_eye += m_moveBackForward * m_cameraForward;
-    m_eye += m_moveUpDown * m_cameraUp;
-
+    // 2. Reset movement accumulators for the next frame.
     m_moveLeftRight = 0.0f;
     m_moveBackForward = 0.0f;
-    m_moveUpDown = 0.0f;
+    // m_moveUpDown is not used and remains 0.0f.
 
-    m_at = m_eye + m_at;
-    m_up = m_cameraUp;
 
+
+    m_at = XMVectorAdd(m_eye, m_target);
+
+
+    // 5. Recompute the view matrix.
+    m_view = XMMatrixLookAtLH(m_eye, m_at, m_up);
+}
+
+void Camera::Follow(const Character& ch)
+{
+    // --- 1. where is the character and which way is he facing? ---
+    const XMVECTOR pos = ch.GetPosition();      // world-space feet
+
+    // --- 2. quarter-view offset in character-local axes ---
+    constexpr float kRadius = 6.0f;   // horizontal distance
+    constexpr float kHeight = 4.0f;   // how high the camera is
+	const XMVECTOR offset = XMVectorSet(-kRadius, kHeight, +kRadius, 0.0f); // offset in character-local axes
+
+    // --- 3. build eye, at, view ---
+    m_eye = pos + offset;
+    m_at = pos + XMVectorSet(0.f, 1.0f, 0.f, 0.f);;    // look at chest-height
     m_view = XMMatrixLookAtLH(m_eye, m_at, m_up);
 }

@@ -71,6 +71,13 @@ public:
 	virtual UINT GetNumVertices() const = 0;
 	virtual UINT GetNumIndices() const = 0;
 
+	void RotateYInObjectCoordinate(FLOAT angleRad, const XMVECTOR& objectOffset);
+
+	void ScaleUniform(FLOAT s)
+	{
+		m_world = XMMatrixScaling(s, s, s) * m_world;
+	}
+
 
 protected:
 

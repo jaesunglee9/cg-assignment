@@ -7,6 +7,10 @@
 /Source/Game/x64/
 
 .vs/
+*.VC.db
+*.ipch
+*.cache
+*.pch
 *.obj
 *.user
 *.suo
