@@ -31,7 +31,7 @@ protected:                     /* Renderable helpers */
     const WORD* getIndices() const override { return m_aIndices.data(); }
 
 private:                      /* Assimp processing pipeline */
-    HRESULT initFromScene(ID3D11Device* device,
+    HRESULT initFromScene(
         _In_ ID3D11Device* pDevice,
         _In_ ID3D11DeviceContext* pImmediateContext,
         _In_ const aiScene* pScene,
@@ -45,13 +45,13 @@ private:                      /* Assimp processing pipeline */
     void    initAllMeshes(const aiScene* pScene);
     void    initSingleMesh(const aiMesh* pMesh);
 
-    HRESULT initMaterials(ID3D11Device* device,
-        ID3D11DeviceContext* context,
+    HRESULT initMaterials(ID3D11Device* pDevice,
+        ID3D11DeviceContext* pImmediateContext,
         const aiScene* pScene,
         const std::filesystem::path& filePath);
 
-    HRESULT loadTextures(ID3D11Device* device,
-        ID3D11DeviceContext* context,
+    HRESULT loadTextures(ID3D11Device* pDevice,
+        ID3D11DeviceContext* pImmediateContext,
         const std::filesystem::path& parentDir,
         const aiMaterial* pMaterial,
         UINT                      index);

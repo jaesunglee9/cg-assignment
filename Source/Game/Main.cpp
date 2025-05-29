@@ -27,7 +27,9 @@ INT WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     // Point Light
     XMFLOAT4 color;
     XMStoreFloat4(&color, Colors::AntiqueWhite);
-    color.x *= 2;
+    color.x *= 20;
+    color.y *= 20;
+    color.z *= 20;
 
     std::shared_ptr<PointLight> pointLight = std::make_shared<PointLight>(XMFLOAT4(-5.77f, 5.77f, -5.77f, 1.0f), color);
 
@@ -49,7 +51,9 @@ INT WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-*/
     XMFLOAT4 rpcolor; // red
     XMStoreFloat4(&rpcolor, Colors::Red);
-    rpcolor.x *= 0.5f;
+    rpcolor.x *= 0.2f;
+    rpcolor.y *= 0.2f;
+    rpcolor.z *= 0.2f;
 
     // Assuming RotatingPointLight constructor is (centerOffset, color, radius, speed)
     // The centerOffset is where the orbit is centered, e.g., origin or model position.
@@ -81,7 +85,7 @@ INT WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
         return 0;
 
 
-    // Phong Cube
+    // Golem
     std::shared_ptr<Model> golem = std::make_shared<Model>(L"../../Data/Stone/Stone.obj");
     if (FAILED(game->GetRenderer()->AddRenderable(L"Golem", golem)))
         return 0;
