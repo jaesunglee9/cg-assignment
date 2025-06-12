@@ -44,6 +44,10 @@ public:
 private:
 	static constexpr const XMVECTORF32 DEFAULT_FORWARD = { 0.0f, 0.0f, 1.0f, 0.0f };
 	static constexpr const XMVECTORF32 DEFAULT_RIGHT = { 1.0f,  0.0f, 0.0f, 0.0f };
+	static constexpr const XMVECTORF32 SCREEN_FWD =
+	{ 0.70710678f, 0.0f, -0.70710678f, 0.0f };   //  ( +1, 0,  -1 ) / ¡î2
+	static constexpr const XMVECTORF32 SCREEN_RIGHT =
+	{ 0.70710678f, 0.0f,  0.70710678f, 0.0f };   //  ( +1, 0,  +1 ) / ¡î2
 
 	XMVECTOR m_targetPosition;
 	XMVECTOR m_currentPosition;
